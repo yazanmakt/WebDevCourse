@@ -1,0 +1,50 @@
+ p {
+     color: green;
+     font-weight: bold;
+     border: 1px solid black;
+
+ }
+
+
+ .highlight {
+     background-color: rgb(249, 214, 76);
+     padding: 5px;
+ }
+
+ #main-title {
+     font-size: 24px;
+     color: blue;
+ }
+
+ .myButton {
+     color: rgb(255, 255, 255);
+     font-size: 20px;
+     line-height: 20px;
+     padding: 14px;
+     border-radius: 50px;
+     font-family: Georgia, serif;
+     font-weight: normal;
+     text-decoration: none;
+     font-style: normal;
+     font-variant: normal;
+     text-transform: none;
+     background-image: linear-gradient(to right, rgb(28, 110, 164) 0%, rgb(35, 136, 203) 50%, rgb(20, 78, 117) 100%);
+     box-shadow: rgb(0, 0, 0) 5px 5px 15px 5px;
+     border: 2px solid rgb(28, 110, 164);
+     display: inline-block;
+ }
+
+ .myButton:hover {
+     background: #1C6EA4;
+ }
+
+ .myButton:active {
+     background: #144E75;
+ }
+
+ .video-table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-top: 30px;
+     font-family: Georgia, serif;
+ }
