@@ -5,49 +5,83 @@ let txt1
 let txt2
 let btn
 let lblRes
+let op
 
 function pageLoaded() {
     txt1 = document.getElementById('txt1');
     txt2 = document.getElementById('txt2');
     btn = document.getElementById('btnCalc');
     lblRes = document.getElementById('lblRes');
+    op = document.getElementById('op');
     btn.addEventListener('click', () => {
         calculate();
     });
+
+    const btn2 = document.getElementById("btn2");
+    //this is callback
+    btn2.addEventListener("click", () => {
+        print("btn2 clicked : " + btn2.id + btn2.value, false);
+    })
 
 
 }
 
 function calculate() {
-    let txt1text = txt1.value;
-    let num1 = parseInt(txt1text);
+    // get numbers
+    const num1 = parseInt(txt1.value);
+    const num2 = parseInt(txt2.value);
 
-    let txt2text = txt2.value;
-    let num2 = parseInt(txt2text);
+    let res
 
-    let res = num1 + num2;
+    //use selected operation from the list "dropdown"
+    switch (op.value) {
+        case "+":
+            res = num1 + num2;
+            break;
+
+        case "-":
+            res = num1 - num2;
+            break;
+
+        case "*":
+            res = num1 * num2;
+            break;
+
+        case "/":
+            res = num2 === 0 ? NaN : num1 / num2; // simple handling
+            break;
+    }
 
     lblRes.innerText = res;
+
+    print(`${num1} ${op.value} ${num2} = ${res}`, false);
 }
 
 
 
 
-const btn2 = document.getElementById("btn2");
-//this is callback
-btn2.addEventListener("click", () => {
-
-    print("btn2 clicked : " + btn2.id + btn2.value);
-});
 
 
-function print(msg) {
+
+function print(msg, appendToLastLine) {
     //--get text area element reference 
     const ta = document.getElementById("output");
-    //write message to textArea text
-    if (ta) ta.value = msg;
-    //write log
-    else console.log(msg);
+    if (!ta) {
+        console.log(msg);
+        return;
+    }
+    if (appendToLastLine) {
+        //continue the last line
+        ta.value += msg;
+    } else {
+        //start a new line
+        if (ta.value !== "") {
+            ta.value += "\n";
+        }
+        ta.value += msg;
+    }
+
+    ta.scrollTop = ta.scrollHeight;
 }
 
 
@@ -92,5 +126,5 @@ function demoNative() {
     out += "\n[Callback] calc(10,20, x+y ) = " + result;
 
     //print to log
-    print(out);
+    print(out, false);
 }
