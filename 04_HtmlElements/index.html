@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
@@ -13,30 +15,39 @@
     <br>
     <hr>
     <br>
-    <table>
-        <tr>
-            <td style="padding: 5px;">
-                <input id="txt1" type="text" style="width: 200px;">
-            </td>
-            <td>
-                <select id="op" style="font-size: 14px; padding: 3px;">
+    <div class="container mt-3">
+        <div class="row g-2 align-items-center">
+            <!--txt1-->
+            <div class="col-12 col-sm-6 col-md-3">
+                <input id="txt1" type="text" class="form-control">
+            </div>
+
+            <!--operator dropdown-->
+            <div class="col-4 col-sm-2 col-md-1">
+                <select id="op" class="form-select">
                     <option value="+">+</option>
                     <option value="-">-</option>
                     <option value="*">x</option>
                     <option value="/">÷</option>
                 </select>
-            </td>
-            <td style="padding: 5px;">
-                <input id="txt2" type="text" style="width: 200px;">
-            </td>
-            <td style="padding: 5px;">
-                <button id="btnCalc"> = </button>
-            </td>
-            <td style="padding: 5px;">
-                <h3 id="lblRes"></h3>
-            </td>
-        </tr>
-    </table>
+            </div>
+
+            <!--txt2-->
+            <div class="col-12 col-sm-6 col-md-3">
+                <input id="txt2" type="text" class="form-control">
+            </div>
+
+            <!--= button-->
+            <div class="col-4 col-sm-2 col-md-1">
+                <button id="btnCalc" class="btn btn-primary w-100">=</button>
+            </div>
+
+            <!--results-->
+            <div class="col-12 col-sm-6 col-md-4">
+                <h3 id="lblRes" class="mb-0"></h3>
+            </div>
+        </div>
+    </div>
     <br>
     <textarea id="output" style="width: 100%; height: 600px;"></textarea>
 </body>
