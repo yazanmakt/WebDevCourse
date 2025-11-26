@@ -27,11 +27,44 @@ function pageLoaded() {
 }
 
 function calculate() {
+
+    txt1.classList.remove("is-valid", "is-invalid");
+    txt2.classList.remove("is-valid", "is-invalid");
+
     // get numbers
     const num1 = parseInt(txt1.value);
     const num2 = parseInt(txt2.value);
 
     let res
+    let isvalid = true;
+
+    //validate num1
+    if (isNaN(num1)) {
+        txt1.classList.remove("is-valid");
+        txt1.classList.add("is-invalid");
+        isvalid = false;
+    } else {
+        txt1.classList.remove("is-invalid");
+        txt1.classList.add("is-valid");
+    }
+
+    //validate num2
+    if (isNaN(num2)) {
+        txt1.classList.remove("is-valid");
+        txt1.classList.add("is-invalid");
+        isvalid = false;
+    } else {
+        txt1.classList.remove("is-invalid");
+        txt1.classList.add("is-valid");
+    }
+
+    //stop if numbers are invalid
+    if (!isvalid) {
+        lblRes.innerText = "";
+        print("invalid input", false);
+        return;
+    }
+
 
     //use selected operation from the list "dropdown"
     switch (op.value) {
