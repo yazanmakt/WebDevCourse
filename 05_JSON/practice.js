@@ -5,16 +5,14 @@ let song1 = {
     "duration": 233,
     "genre": "Pop"
 }
-let song2 = Object.assign({}, song1); //deep Clone for the song1 object
+//Clone 
+let song2 = Object.assign({}, song1);
 
 let { title, duration } = song2;
 
-
-// Iterate using for...in
 for (let key in song1) {
     console.log(`${key}: ${song1[key]}`);
 }
-
 
 
 let playlist = {
@@ -47,11 +45,13 @@ playlist.songs.forEach((song) => {
     console.log(`Title: ${song.title}, Artist: ${song.artist}`);
 })
 
-
-const jsonText = JSON.stringify(playlist);//playlist1 and 2 are different 
+const jsonText = JSON.stringify(playlist);
 let playlist2 = JSON.parse(jsonText);
 
-//save the playlist text as key in browser client local storage
+//Save the playlist text as key in browser client local 
 localStorage.setItem("playlist", jsonText);
 let storageText = localStorage.getItem("playlist");
 let playlist3 = JSON.parse(storageText);
+
+
+
