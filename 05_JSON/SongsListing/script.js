@@ -5,6 +5,8 @@ const form = document.getElementById('songForm');
 const list = document.getElementById('songList');
 const submitBtn = document.getElementById('submitBtn');
 
+let songs = [];
+
 
 // This runs automatically when the page finishes loading
 document.addEventListener('DOMContentLoaded', () => {
