@@ -38,23 +38,40 @@ form.addEventListener('submit', (e) => {
     //Read Forms Data
     const title = document.getElementById('title').value;
     const url = document.getElementById('url').value;
+    const rating = document.getElementById('rating').value;
+    const existingId = document.getElementById('songId').value;
 
 
-    //create JSON OBJ Based on URL title
-    const song = {
-        id: Date.now(),  // Unique ID
-        title: title,
-        url: url,
-        dateAdded: Date.now()
-    };
+    if (existingId) {
+        // ----- UPDATE MODE -----
+        const index = songs.findIndex(song => song.id == existingId);
 
+        if (index !== -1) {
+            songs[index].title = title;
+            songs[index].url = url;
+            songs[index].rating = rating;
+        }
+    } else {
+        // ----- ADD MODE -----
+        const song = {
+            id: Date.now(),
+            title: title,
+            url: url,
+            rating: rating,
+            dateAdded: Date.now()
+        };
 
-    songs.push(song);
+        songs.push(song);
+    }
 
     saveAndRender();
     //TO DO SAVE  AND RERENDER 
 
     form.reset();
+    document.getElementById('songId').value = '';
+    submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add';
+    submitBtn.classList.remove('btn-warning');
+    submitBtn.classList.add('btn-success');
 });
 
 //Save to Local storage and  render UI Table
@@ -75,17 +92,19 @@ function renderSongs() {
         const row = document.createElement('tr');
 
         row.innerHTML = `
-            <td>${song.title}</td>
-            <td><a href="${song.url}" target="_blank" class="text-info">Watch</a></td>
-            <td class="text-end">
-                <button class="btn btn-sm btn-warning me-2" onclick="editSong(${song.id})">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
+    <td>${song.title}</td>
+    <td><a href="${song.url}" target="_blank" class="text-info">Watch</a></td>
+    <td>${song.rating || ''}</td>
+    <td class="text-end">
+        <button class="btn btn-sm btn-warning me-2" onclick="editSong(${song.id})">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
+            <i class="fas fa-trash"></i>
+        </button>
+    </td>
+`;
+
         list.appendChild(row);
     });
 }
@@ -101,10 +120,12 @@ function deleteSong(id) {
 function editSong(id) {
 
     const songToEdit = songs.find(song => song.id === id);
+    if (!songToEdit) return;
 
 
     document.getElementById('title').value = songToEdit.title;
     document.getElementById('url').value = songToEdit.url;
+    document.getElementById('rating').value = songToEdit.rating || '';
     document.getElementById('songId').value = songToEdit.id; // Set Hidden ID
 
     submitBtn.innerHTML = '<i class="fas fa-save"></i> Update';
