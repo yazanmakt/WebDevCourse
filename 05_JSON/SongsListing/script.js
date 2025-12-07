@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
         songs = [];
     }
 
+    document.querySelectorAll('input[name="sortOption"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            renderSongs();   // resort when clicked
+        });
+    });
+
     // SHOW the data
     renderSongs(songs);
 });
@@ -38,7 +44,7 @@ form.addEventListener('submit', (e) => {
     //Read Forms Data
     const title = document.getElementById('title').value;
     const url = document.getElementById('url').value;
-    const rating = document.getElementById('rating').value;
+    const rating = Number(document.getElementById('rating').value);
     const existingId = document.getElementById('songId').value;
 
 
@@ -93,11 +99,29 @@ function getYoutubeId(url) {
 }
 
 
+//sorted by date name rating function
+function getSortedSongs() {
+    const selected = document.querySelector('input[name="sortOption"]:checked').value;
+    const sorted = [...songs];
+
+    if (selected === 'title') {
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (selected === 'rating') {
+        sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    } else {
+        sorted.sort((a, b) => b.dateAdded - a.dateAdded);
+    }
+
+    return sorted;
+}
+
 //Display Song From Current Updated songs array as tale Rows 
 function renderSongs() {
     list.innerHTML = ''; // Clear current list
 
-    songs.forEach(song => {
+    const sortedSongs = getSortedSongs();
+
+    sortedSongs.forEach(song => {
         const row = document.createElement('tr');
 
         // if old songs in localStorage don’t have youtubeId yet:
