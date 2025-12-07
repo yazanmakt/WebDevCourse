@@ -50,6 +50,7 @@ form.addEventListener('submit', (e) => {
             songs[index].title = title;
             songs[index].url = url;
             songs[index].rating = rating;
+            songs[index].youtubeId = getYoutubeId(url);
         }
     } else {
         // ----- ADD MODE -----
@@ -58,7 +59,8 @@ form.addEventListener('submit', (e) => {
             title: title,
             url: url,
             rating: rating,
-            dateAdded: Date.now()
+            dateAdded: Date.now(),
+            youtubeId: getYoutubeId(url)
         };
 
         songs.push(song);
@@ -83,31 +85,53 @@ function saveAndRender() {
 }
 
 
+//helper function to get id from youtube thumbnail
+function getYoutubeId(url) {
+    const regExp = /(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+}
+
+
 //Display Song From Current Updated songs array as tale Rows 
 function renderSongs() {
     list.innerHTML = ''; // Clear current list
 
     songs.forEach(song => {
-        // Create table row
         const row = document.createElement('tr');
 
+        // if old songs in localStorage don’t have youtubeId yet:
+        const ytId = song.youtubeId || getYoutubeId(song.url);
+        const thumbUrl = ytId
+            ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+            : '';
+
         row.innerHTML = `
-    <td>${song.title}</td>
-    <td><a href="${song.url}" target="_blank" class="text-info">Watch</a></td>
-    <td>${song.rating || ''}</td>
-    <td class="text-end">
-        <button class="btn btn-sm btn-warning me-2" onclick="editSong(${song.id})">
-            <i class="fas fa-edit"></i>
-        </button>
-        <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
-            <i class="fas fa-trash"></i>
-        </button>
-    </td>
-`;
+            <td>${song.title}</td>
+            <td>
+                ${thumbUrl
+                ? `<a href="${song.url}" target="_blank">
+                           <img src="${thumbUrl}" alt="${song.title}"
+                                style="width:120px;height:auto;">
+                       </a>`
+                : ''}
+            </td>
+            <td><a href="${song.url}" target="_blank" class="text-info">Watch</a></td>
+            <td>${song.rating || ''}</td>
+            <td class="text-end">
+                <button class="btn btn-sm btn-warning me-2" onclick="editSong(${song.id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
 
         list.appendChild(row);
     });
 }
+
 
 function deleteSong(id) {
     if (confirm('Are you sure?')) {
