@@ -131,26 +131,29 @@ function renderSongs() {
             : '';
 
         row.innerHTML = `
-            <td>${song.title}</td>
-            <td>
-                ${thumbUrl
-                ? `<a href="${song.url}" target="_blank">
-                           <img src="${thumbUrl}" alt="${song.title}"
-                                style="width:120px;height:auto;">
-                       </a>`
+    <td>${song.title}</td>
+    <td>
+        ${thumbUrl
+                ? `<img src="${thumbUrl}" alt="${song.title}"
+                    style="width:120px;height:auto;cursor:pointer;"
+                    onclick="playSong(${song.id})">`
                 : ''}
-            </td>
-            <td><a href="${song.url}" target="_blank" class="text-info">Watch</a></td>
-            <td>${song.rating || ''}</td>
-            <td class="text-end">
-                <button class="btn btn-sm btn-warning me-2" onclick="editSong(${song.id})">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
+    </td>
+    <td><a href="${song.url}" target="_blank" class="text-info">Watch</a></td>
+    <td>${song.rating || ''}</td>
+    <td class="text-end">
+        <button class="btn btn-sm btn-info me-2" onclick="playSong(${song.id})">
+            <i class="fas fa-play"></i>
+        </button>
+        <button class="btn btn-sm btn-warning me-2" onclick="editSong(${song.id})">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
+            <i class="fas fa-trash"></i>
+        </button>
+    </td>
+`;
+
 
         list.appendChild(row);
     });
@@ -163,6 +166,24 @@ function deleteSong(id) {
         songs = songs.filter(song => song.id !== id);
         saveAndRender();
     }
+}
+
+
+//adding the video in the page function
+function playSong(id) {
+    const song = songs.find(s => s.id === id);
+    if (!song) return;
+
+    const ytId = song.youtubeId || getYoutubeId(song.url);
+    if (!ytId) {
+        alert('Cannot play this song - invalid youtube URL');
+        return;
+    }
+
+    const embedUrl = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+
+    //open popup window with the youtube player
+    window.open(embedUrl, 'ytplayer', 'width=800,height=450,resizable=yes');
 }
 
 function editSong(id) {
