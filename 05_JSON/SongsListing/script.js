@@ -5,7 +5,14 @@ const form = document.getElementById('songForm');
 const list = document.getElementById('songList');
 const submitBtn = document.getElementById('submitBtn');
 
+const tableWrapper = document.getElementById('tableWrapper');
+const cardsWrapper = document.getElementById('cardsWrapper');
+const toggleViewBtn = document.getElementById('toggleViewBtn');
+const toggleIcon = document.getElementById('toggleIcon');
+
+
 let songs = [];
+let currentView = 'table'; //table or cards
 
 
 // This runs automatically when the page finishes loading
@@ -28,8 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    toggleViewBtn.addEventListener('click', toggleView);
+
     // SHOW the data
-    renderSongs(songs);
+    renderSongs();
 });
 
 
@@ -117,47 +126,91 @@ function getSortedSongs() {
 
 //Display Song From Current Updated songs array as tale Rows 
 function renderSongs() {
-    list.innerHTML = ''; // Clear current list
+    // Clear both table and cards
+    list.innerHTML = '';
+    cardsWrapper.innerHTML = '';
 
     const sortedSongs = getSortedSongs();
 
-    sortedSongs.forEach(song => {
-        const row = document.createElement('tr');
+    if (currentView === 'table') {
+        // TABLE VIEW
+        sortedSongs.forEach(song => {
+            const row = document.createElement('tr');
 
-        // if old songs in localStorage don’t have youtubeId yet:
-        const ytId = song.youtubeId || getYoutubeId(song.url);
-        const thumbUrl = ytId
-            ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
-            : '';
+            const ytId = song.youtubeId || getYoutubeId(song.url);
+            const thumbUrl = ytId
+                ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+                : '';
 
-        row.innerHTML = `
-    <td>${song.title}</td>
-    <td>
-        ${thumbUrl
-                ? `<img src="${thumbUrl}" alt="${song.title}"
-                    style="width:120px;height:auto;cursor:pointer;"
-                    onclick="playSong(${song.id})">`
-                : ''}
-    </td>
-    <td><a href="${song.url}" target="_blank" class="text-info">Watch</a></td>
-    <td>${song.rating || ''}</td>
-    <td class="text-end">
-        <button class="btn btn-sm btn-info me-2" onclick="playSong(${song.id})">
-            <i class="fas fa-play"></i>
-        </button>
-        <button class="btn btn-sm btn-warning me-2" onclick="editSong(${song.id})">
-            <i class="fas fa-edit"></i>
-        </button>
-        <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
-            <i class="fas fa-trash"></i>
-        </button>
-    </td>
-`;
+            row.innerHTML = `
+                <td>${song.title}</td>
+                <td>
+                    ${thumbUrl
+                    ? `<img src="${thumbUrl}" alt="${song.title}"
+                                style="width:120px;height:auto;cursor:pointer;"
+                                onclick="playSong(${song.id})">`
+                    : ''}
+                </td>
+                <td><a href="${song.url}" target="_blank" class="text-info">Watch</a></td>
+                <td>${song.rating || ''}</td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-info me-2" onclick="playSong(${song.id})">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="btn btn-sm btn-warning me-2" onclick="editSong(${song.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
 
+            list.appendChild(row);
+        });
 
-        list.appendChild(row);
-    });
+    } else {
+        // CARDS VIEW
+        sortedSongs.forEach(song => {
+            const ytId = song.youtubeId || getYoutubeId(song.url);
+            const thumbUrl = ytId
+                ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+                : '';
+
+            const col = document.createElement('div');
+            col.className = 'col-12 col-sm-6 col-md-4 col-lg-3';
+
+            col.innerHTML = `
+                <div class="card bg-dark text-light h-100">
+                    ${thumbUrl
+                    ? `<img src="${thumbUrl}" class="card-img-top" alt="${song.title}"
+                                style="cursor:pointer;" onclick="playSong(${song.id})">`
+                    : ''}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${song.title}</h5>
+                        <p class="card-text mb-1">Rating: ${song.rating || '-'}</p>
+                        <a href="${song.url}" target="_blank" class="text-info mb-2">Watch on YouTube</a>
+
+                        <div class="mt-auto d-flex justify-content-between">
+                            <button class="btn btn-sm btn-info" onclick="playSong(${song.id})">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="editSong(${song.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteSong(${song.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            cardsWrapper.appendChild(col);
+        });
+    }
 }
+
 
 
 function deleteSong(id) {
@@ -199,5 +252,30 @@ function editSong(id) {
 
     submitBtn.innerHTML = '<i class="fas fa-save"></i> Update';
     submitBtn.classList.replace('btn-success', 'btn-warning');
+}
+
+//toggle function
+function toggleView() {
+    if (currentView === 'table') {
+        currentView = 'cards';
+
+
+        tableWrapper.classList.add('d-none');
+        cardsWrapper.classList.remove('d-none');
+
+        toggleIcon.classList.remove('fa-th-large');
+        toggleIcon.classList.add('fa-list');
+        toggleViewBtn.title = 'Show table view';
+    } else {
+        currentView = 'table';
+
+        cardsWrapper.classList.add('d-none');
+        tableWrapper.classList.remove('d-none');
+
+        toggleIcon.classList.remove('fa-list');
+        toggleIcon.classList.add('fa-th-large');
+        toggleViewBtn.title = 'Show cards view';
+    }
+    renderSongs();
 }
 
